@@ -13,7 +13,7 @@ const usersRouter = require('./routes/users');
 
 app.use('/books', booksRouter);
 app.use('/profile', profileRouter);
-app.use('/users', usersRouter);
+app.use('/users', usersRouter); 
 app.use(express.static('static'));
 
 app.listen(3000);

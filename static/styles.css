@@ -1,0 +1,13 @@
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: -5px;
+    padding-top: 4rem;
+}
+
+.form-col {
+    display: flex;
+    flex-direction: column;
+    padding-right: 2rem;
+    max-width: 100%;
+}
