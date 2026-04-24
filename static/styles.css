@@ -2,7 +2,7 @@
     display: flex;
     flex-wrap: wrap;
     margin-left: -5px;
-    padding-top: 4rem;
+    padding-top: 3rem;
 }
 
 .form-col {
@@ -10,4 +10,12 @@
     flex-direction: column;
     padding-right: 2rem;
     max-width: 100%;
+}
+
+#sign-up-prompt {
+    margin-top: 1rem;
+}
+
+.navbar-nav{
+    
 }

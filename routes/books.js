@@ -1,8 +1,9 @@
-const express = require('express');
-const router = express.Router();
+import express from 'express';
+import { Router } from 'express';
+const router = Router();
 
 router.get("/", (req, res) => {
     res.render('books');
 })
 
-module.exports = router;
+export default router;
