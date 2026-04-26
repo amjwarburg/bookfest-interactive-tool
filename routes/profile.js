@@ -1,21 +1,27 @@
-import express from 'express';
-import { Router } from 'express';
+import express from "express";
+import { Router } from "express";
+import sqlite3 from "sqlite3";
+const db = new sqlite3.Database("databases/bookfest.db");
 const router = Router();
 
 router.get("/", (req, res) => {
-    res.render('profile');
-})
-
-router.route('/:id').get((req, res) => {
-  res.render('profile', { id: req.params.id });
-}).put((req, res) => {
-  res.send(`update user ${req.params.id}`);
-}).delete((req, res) => {  res.send(`delete user ${req.params.id}`);
+  res.redirect("/profile/" + req.session.userID);
 });
 
-router.param('id', (req, res, next, id) => {
-    console.log(id);
-    next();
-})
+router.route("/:id").get((req, res) => {
+  db.get(
+    "SELECT id, firstName, lastName, email FROM users WHERE id = ?",
+    [req.params.id],
+    (err, row) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).send("Error retrieving user profile");
+      }
+      res.render("profile", {
+        user: row,
+      });
+    },
+  );
+});
 
 export default router;

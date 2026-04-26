@@ -1,11 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/styles.css" />
     <title>Profile</title>
-</head>
-<body>
+  </head>
+  <body>
     <%- include('layout'); %>
-</body>
+    <div class="profile-container">
+      <div class="profile">
+        <img src="/user_1.png" class="profile-image" width="125" height="125" />
+        <h3><%= user.firstName %> <%= user.lastName %></h3>
+        <p>Email: <%= user.email %></p>
+      </div>
+      <h3>Books</h3>
+    </div>
+  </body>
 </html>
