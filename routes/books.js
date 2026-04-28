@@ -14,6 +14,16 @@ router.get("/", (req, res) => {
   });
 });
 
+router.get("/api/all", (req, res) => {
+  db.all("SELECT * FROM books", (err, rows) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send("Error retrieving books");
+    }
+    res.json(rows);
+  });
+});
+
 // prettier-ignore
 router.get("/api/search", (req, res) => {
   db.all("SELECT * FROM books WHERE title LIKE ? OR author LIKE ?", [
