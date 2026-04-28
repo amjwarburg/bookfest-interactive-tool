@@ -16,12 +16,12 @@
         </div>
       </form>
     </nav>
-    <div class="books-grid">
+    <div class="books-grid" id="books-grid">
         <% for (let book of books) {%>
             <div class="book-card">
                 <img class="book-card-cover" src="<%= book.cover_image %>">
-                <div class="book-card-middle prevent-select">Add Book</div>
-                <h5 class="book-card-title book-card-text"><%= book.title %></h5>
+                <button class="book-card-middle prevent-select">Add Book</button>
+                <h5 id="book-card-title" class="book-card-title book-card-text"><%= book.title %></h5>
                 <h6 class="book-card-author book-card-text"><%= book.author%></h6>
             </div>
         <% } %>

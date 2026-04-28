@@ -46,6 +46,7 @@
 }
 
 .book-card-middle {
+  border: none;
   display: block;
   transition: 0.5s ease;
   top: 25%;
@@ -94,4 +95,8 @@
   display: flex;
   gap: 0.5rem;
   margin-left: 5rem;
+}
+
+.no-results {
+  color: #e0424e;
 }

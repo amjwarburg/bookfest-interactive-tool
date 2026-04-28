@@ -1,15 +1,35 @@
 A web application specially designed for the shropshire bookfest pupils
 
-Done:
-Create a basic login and registration process
-Create domains for profile, books, index
+IDEAS:
+Quotes page - each book has a list of associated quotes.
+Filter by genres
+A page with 'THIS YEAR'S SHORTLIST'
+To be read tracker!
 
-Still to implement:
+DONE:
+Create a basic login and registration process (COMPLETED 24.04.26)
+Create domains for profile, books, index (COMPLETED 24.04.26)
+
+-- THE SEARCH FEATURE:
+
+1. Initial load sync (check for '?q=...' and input that value) (COMPLETED 26.04.26)
+2. Ensure the innerHTML made in Javascript uses the same CSS classes and struture as the server-side template: so that it doesn't jump/change styles (COMPLETED 27.04.26)
+3. No results state: handle a case where the array is empty and show a friendly message 'no books found' (COMPLETED 27.04.26)
+4. Use history.replaceState to keep the URL updated but not clutter up the user's history with lots of URLs (COMPLETED 26.04.26)
+   Create a search bar for the books database (COMPLETED 27.04.26)
+
+STILL TO IMPLEMENT:
 Profile page and books page require login to access
-Profile page HTML and CSS etc.
+Profile page HTML and CSS dynamically updated etc.
 Session stays open for debugging (reduce times the admin has to login)
 Login keeps email field filled if it is incorrect (refer to video on express from YouTube)
-Create a search bar for the books database
+Email checking upon registration - sending an email and confirming account, for example
+Multiple pages for the books page - so that you can click next and browse more of them. Maybe 30 per page (10 rows of 3)?
+
+-- THE SEARCH FEATURE:
+
+3. Debouncing - don't fetch on every keystroke, but use setTimeout to wait 300ms
+4. Minimum character limit: trigger a fetch only if the user has typed two characters
 
 Commands:
 -- Run phpliteadmin server on (http://localhost:8080/phpliteadmin.php/)

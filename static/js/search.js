@@ -10,10 +10,52 @@ searchInput.addEventListener("input", async (readEvent) => {
   window.history.replaceState(null, "", newURL);
 
   // Fetch from Express API
-  const response = await fetch("api/search?q=" + query);
-  const data = await response.json();
+  if (query.length > 1) {
+    const response = await fetch("/books/api/search?q=" + query);
+    const data = await response.json();
 
-  // Create a container to remove old results
-  const containter = document.querySelector(".book-grid");
-  containter.innerHTML = "";
+    // Create a container to remove old results
+    const containter = document.querySelector(".books-grid");
+    containter.innerHTML = "";
+
+    const display = () => {
+      if (data.length == 0) {
+        const createNoResults = document.createElement("h3");
+        const booksGrid = document.getElementById("books-grid");
+        createNoResults.classList.add("no-results");
+        createNoResults.textContent = "No Books Found";
+        booksGrid.append(createNoResults);
+      }
+      data.forEach((book) => {
+        const createBookCard = document.createElement("div");
+        const createBookTitle = document.createElement("h5");
+        const createBookAuthor = document.createElement("p");
+        const createBookCover = document.createElement("img");
+        const createBookMiddle = document.createElement("button");
+        const booksGrid = document.getElementById("books-grid");
+
+        createBookCard.classList.add("book-card");
+        createBookCover.classList.add("book-card-cover");
+        createBookAuthor.classList.add("book-card-author");
+        createBookTitle.classList.add("book-card-title");
+        createBookMiddle.classList.add("book-card-middle");
+        createBookCover.src = book.cover_image;
+
+        document.getElementById("book-card");
+        let bookAuthor = book.author;
+        let bookTitle = book.title;
+        createBookTitle.textContent = bookTitle;
+        createBookMiddle.textContent = "Add Book";
+        createBookAuthor.textContent = bookAuthor;
+        createBookCard.append(
+          createBookCover,
+          createBookTitle,
+          createBookAuthor,
+          createBookMiddle,
+        );
+        booksGrid.append(createBookCard);
+      });
+    };
+    display();
+  }
 });
