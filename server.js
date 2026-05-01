@@ -1,38 +1,52 @@
-import sqlite3 from "sqlite3";
-const db = new sqlite3.Database("databases/bookfest.db");
-
 import express from "express";
+import sqlite3 from "sqlite3";
+import session from "express-session";
+import profileRouter from "./routes/profile.js";
+import booksRouter from "./routes/books.js";
+import authRouter from "./middleware/auth.js";
+import bcrypt from "bcrypt";
+
+// Initialise app
 const app = express();
+app.get("/test", (req, res) => res.send("Server is alive!"));
+
+// App settings
+app.set("view engine", "ejs");
+
+// Global middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(
   session({
     secret: "bookfest_secret_key",
     resave: false,
     saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 1000 * 60 * 60 * 24,
+    },
   }),
 );
 
+app.use(express.static("static"));
+
+const db = new sqlite3.Database("databases/bookfest.db");
+
 app.use((req, res, next) => {
   res.locals.session = req.session;
+  res.locals.user = req.session.user || null;
   next();
 });
 
-import bcrypt from "bcrypt";
-
-app.set("view engine", "ejs");
-
+// Routes
 app.get("/", (req, res) => {
   res.render("index");
 });
 
-import profileRouter from "./routes/profile.js";
-import booksRouter from "./routes/books.js";
-import usersRouter from "./routes/users.js";
-import session from "express-session";
-
 app.use("/books", booksRouter);
 app.use("/profile", profileRouter);
-app.use("/users", usersRouter);
-app.use(express.static("static"));
+app.use("/users", authRouter);
 
-app.listen(3000);
+app.listen(3000, "0.0.0.0", () => {
+  console.log("Server is running on http://localhost:3000");
+});

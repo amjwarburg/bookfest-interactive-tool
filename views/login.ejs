@@ -4,6 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <% if (typeof errorMessage !== 'undefined') { %>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+        Swal.fire({
+            icon: 'error',
+            title: 'Typo?',
+            text: '<%= errorMessage %>',
+        })});
+        </script>
+        <% } %>
+        <script>
+        document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+
+            if (urlParams.get('auth_required') === 'true') {
+                Swal.fire({
+                    title: 'Login Required',
+                    text: 'Please log in to access your profile and books',
+                    icon: 'info',
+                    confirmButtonText: 'Okay!',
+                    confirmButtonColor: '#e0424e',
+                });
+            window.history.replaceState(null, "", window.location.pathname);
+        }})
+    </script>
     <title>Log in</title>
 </head>
 <body>
@@ -12,7 +38,7 @@
     <form action="/users/login" method="post">
         <div class="form-row justify-content-md-center mb-3">
             <div class="mb-1">
-            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="email" placeholder="Email" required type="email">
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="email" placeholder="Email" required type="email" value="<%= typeof oldEmail !== 'undefined' ? oldEmail : '' %>">
         </div>
         </div>
         <div class="mb-4 mt-1">

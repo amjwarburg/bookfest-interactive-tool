@@ -4,7 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <% if (typeof errorMessage1 !== 'undefined') { %>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+        Swal.fire({
+            icon: 'error',
+            title: 'Longer password, please!',
+            text: '<%= errorMessage1 %>',
+        })});
+        </script>
+        <% } %>
+
+        <% if (typeof errorMessage2 !== 'undefined') { %>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops!',
+            text: '<%= errorMessage2 %>',
+        })});
+        </script>
+        <% } %>
     <title>Register</title>
+
 </head>
 <body>
     <%- include('layout'); %>
@@ -12,14 +35,14 @@
     <form action="/users/register" method="post">
         <div class="form-row justify-content-md-center mb-3">
             <div class="form-col" mb-3>
-            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="firstName" placeholder="First Name" required type="text">
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="firstName" placeholder="First Name" required type="text" value="<%= typeof oldFirstName !== 'undefined' ? oldFirstName : '' %>">
         </div>
         <div class="mb-3">
-            <input class="form-control mx-auto w-auto" name="lastName" placeholder="Last Name" required type="text">
+            <input class="form-control mx-auto w-auto" name="lastName" placeholder="Last Name" required type="text" value="<%= typeof oldLastName !== 'undefined' ? oldLastName : '' %>">
         </div>
         </div>
         <div class="mb-3">
-            <input class="form-control mx-auto w-auto" name="email" placeholder="Email" required type="email">
+            <input class="form-control mx-auto w-auto" name="email" placeholder="Email" required type="email" value="<%= typeof oldEmail !== 'undefined' ? oldEmail : '' %>">
         </div>
         <div class="mb-3">
             <input class="form-control mx-auto w-auto" name="password" placeholder="Password" required type="password">
