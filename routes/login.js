@@ -34,7 +34,13 @@ router.post("/", (req, res) => {
           });
         }
         // Login successful
-        req.session.userID = row.id;
+        req.session.user = {
+          id: row.id,
+          firstName: row.firstName,
+          lastName: row.lastName,
+          email: row.email,
+          is_admin: row.is_admin,
+        };
         return res.redirect("/");
       },
     );

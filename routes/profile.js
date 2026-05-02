@@ -6,12 +6,16 @@ const db = new sqlite3.Database("databases/bookfest.db");
 const router = Router();
 
 router.get("/", (req, res) => {
-  res.redirect("/profile/" + req.session.userID);
+  if (req.session.user && req.session.user.id) {
+    res.redirect("/profile/" + req.session.user.id);
+  } else {
+    res.redirect("/users/login");
+  }
 });
 
 router.route("/:id").get(ensureAuthenticated, (req, res) => {
   db.get(
-    "SELECT id, firstName, lastName, email FROM users WHERE id = ?",
+    "SELECT id, firstName, lastName, email, is_admin FROM users WHERE id = ?",
     [req.params.id],
     (err, row) => {
       if (err) {

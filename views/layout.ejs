@@ -21,12 +21,12 @@
             <a class="nav-link" href="/">Home</a>
             <li class="nav-item"><a class="nav-link" href="/books">Books</a></li>
         </li>
-        <% if (session.userID) { %>
+        <% if (user) { %>
             <li class="nav-item"><a class="nav-link" href="/profile">Profile</a></li>
         <% } %>
     </ul>
     <ul class="navbar-nav ms-auto">
-        <% if (session.userID) { %>
+        <% if (user) { %>
             <li class="nav-item"><a class="nav-link" href="/users/logout">Logout</a></li>
         <% } else { %>
             <li class="nav-item"><a class="nav-link" href="/users/login">Login</a></li>

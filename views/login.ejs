@@ -30,6 +30,22 @@
             window.history.replaceState(null, "", window.location.pathname);
         }})
     </script>
+    <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const urlParams = new URLSearchParams(window.location.search);
+
+    if (urlParams.get("not_admin") === "true") {
+      Swal.fire({
+        title: "Insufficient Permission",
+        text: "Please log in as an admin to access this",
+        icon: "warning",
+        confirmButtonText: "Okay!",
+        confirmButtonColor: "#e0424e",
+      });
+      window.history.replaceState(null, "", window.location.pathname);
+    }
+  });
+</script>
     <title>Log in</title>
 </head>
 <body>

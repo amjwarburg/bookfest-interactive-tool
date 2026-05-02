@@ -3,8 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home</title>
+    <title>Books</title>
     <link rel="stylesheet" href="/styles.css" />
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+
+            if (urlParams.get('error') === 'not_admin') {
+                Swal.fire({
+                    title: 'Insufficient Permission',
+                    text: 'Please log in as an admin to access this',
+                    icon: 'warning',
+                    confirmButtonText: 'Okay!',
+                    confirmButtonColor: '#e0424e',
+                });
+            window.history.replaceState(null, "", window.location.pathname);
+        }})
+    </script>
   </head>  
   <body>
     <%- include('layout'); %>
@@ -13,6 +28,9 @@
         <div class="search-bar-container">
         <input class="form-control mr-sm-2" id="book-search" type="search" placeholder="Search" aria-label="Search">
         <button class="btn btn-success my-2 my-sm-0" type="submit">Search</button>
+        <% if (user && user.is_admin === 1) { %>
+        <a href="/books/manage" class="btn btn-dark">Manage</a>
+        <% } %>
         </div>
       </form>
     </nav>

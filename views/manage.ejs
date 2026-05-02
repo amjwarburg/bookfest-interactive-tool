@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <%- include('layout'); %>
+<main class="container mt-5">
+    <h2>Add Book</h2>
+    <form action="/books/manage" method="POST" enctype="multipart/form-data">
+  <div class="form-row">
+    <div class="form-group col-sm-3 px-2 pb-4">
+      <label>Title</label>
+      <input type="text" name="title" class="form-control" placeholder="e.g. Wildlands" required>
+    </div>
+    <div class="form-group col-sm-3 px-2">
+      <label>Author</label>
+      <input type="text" name="author" class="form-control" placeholder="e.g. Brogen Murphy" required>
+    </div>
+    <div class="form-group col-sm-3 px-2">
+      <label>Publication Year</label>
+      <input type="text" name="publication_year" class="form-control" placeholder="e.g. 2025" required>
+    </div>
+  <div class="form-group col-sm-3 px-2">
+    <label>Reading Age</label>
+    <input type="text" name="reading_age" class="form-control" placeholder="e.g. 8-12" required>
+    
+  </div>
+  <div class="form-group col-sm-3 px-2">
+    <div class="checkbox-separator">
+    <label>Genre(s)</label>
+    <div class="checkbox-interior">
+    <% genres.forEach(genre => { %>
+        <input type="checkbox" name="genres" value="<%= genre.id %>" id="g<%= genre.id %>">
+        <label for="g<%= genre.id %>" class="me-3"><%= genre.name %></label><br>
+    <% }) %>
+
+    </div>
+    </div>
+  </div>
+  <div class="form-group col-sm-3 px-2">
+    <div class="checkbox-separator">
+    <label>Mood(s)</label>
+    <div class="checkbox-interior">
+    <% moods.forEach(mood => { %>
+        <input type="checkbox" name="moods" value="<%= mood.id %>" id="m<%= mood.id %>">
+        <label for="m<%= mood.id %>" class="me-3"><%= mood.emoji %> <%= mood.name %></label><br>
+    <% }) %>
+    </div>
+    </div>
+    <div class="form-group col-sm-3 px-2">
+    </div>
+  </div>
+  </div>
+    <div class="form-row">
+  </div>
+  </div>
+  <button type="submit" class="btn btn-primary mx-auto" style="display: block">Add Book</button>
+</form>
+    <h2>Books Inventory</h2>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% books.forEach(book => { %>
+            <tr>
+            <td><%= book.title %></td>
+            <td><%= book.author %></td>
+            <td>
+                <form action="/books/delete/<%= book.id %>" method="POST" onsubmit="return confirm('Delete this book?')">
+                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                </form>
+            </td>
+            </tr>
+        <% }) %>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>
