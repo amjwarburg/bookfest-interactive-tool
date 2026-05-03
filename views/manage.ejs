@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage</title>
     <link rel="stylesheet" href="/styles.css">
+    <script src="/js/preview.js" defer></script>
 </head>
 <body>
     <%- include('layout'); %>
@@ -52,11 +53,28 @@
     </div>
     </div>
     <div class="form-group col-sm-3 px-2">
+        
     </div>
   </div>
+  <div class="mb-3">
+        <label for="bookCover" class="form-label">Book Cover Image</label>
+        <input 
+            class="form-control" 
+            type="file" 
+            id="coverInput" 
+            name="cover" 
+            accept="image/*" 
+            required
+        >
+        <div class="form-text">Please upload a clear book cover image.</div>
+    
+    <!-- Preview Area -->
+    <div class="mb-3 text-center preview-box">
+        <img id="coverPreview" src="#" alt="Preview" class="img-thumbnail d-none" style="max-height: 200px;">
+    </div>
+    </div>
   </div>
-    <div class="form-row">
-  </div>
+    
   </div>
   <button type="submit" class="btn btn-primary mx-auto" style="display: block">Add Book</button>
 </form>
@@ -75,9 +93,15 @@
             <td><%= book.title %></td>
             <td><%= book.author %></td>
             <td>
+                <div class="d-flex" style="gap: 0.5rem">
+                <form action="/books/edit/<%= book.id %>" method="POST" onsubmit="return confirm('Edit this book?')"></form>
+                <button type="submit" class="btn btn-success btn-sm">Edit</button>
+            
                 <form action="/books/delete/<%= book.id %>" method="POST" onsubmit="return confirm('Delete this book?')">
+                
                 <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                 </form>
+                </div>
             </td>
             </tr>
         <% }) %>

@@ -1,4 +1,4 @@
-A web application specially designed for the shropshire bookfest pupils
+A web application specially designed for the Shropshire Bookfest pupils
 
 IDEAS:
 

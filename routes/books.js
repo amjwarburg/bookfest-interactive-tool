@@ -55,16 +55,45 @@ router.get("/manage", isAdmin, (req, res) => {
 });
 
 router.post("/manage", isAdmin, upload.single("cover"), (req, res) => {
-  try {
-    const { title, author, publication_year, reading_age, genres, moods } =
-      req.body;
-    const coverPath = req.file
-      ? `../static/images/book_covers${req.file.originalname}`
-      : "../static/images/book_covers/default.png";
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Server Error");
-  }
+  const { title, author, publication_year, reading_age, genres, moods } =
+    req.body;
+  const coverPath = req.file
+    ? `/images/book_covers/${req.file.originalname}`
+    : "/images/book_covers/default.png";
+
+  const bookSql = `INSERT INTO books (title, author, publication_year, reading_age, cover_image) VALUES (?, ?, ?, ?, ?)`;
+
+  db.run(
+    bookSql,
+    [title, author, publication_year, reading_age, coverPath],
+    function (err) {
+      if (err) return res.status(500).send("Error adding book");
+
+      const bookID = this.lastID;
+
+      // prettier-ignore
+      if (genres) {
+      const genreList = Array.isArray(genres) ? genres : [genres];
+      genreList.forEach((genreID) => {
+        db.run("INSERT OR IGNORE INTO book_genres (book_id, genre_id) VALUES (?, ?)", [bookID, genreID]);
+      });
+    }
+
+      // prettier-ignore
+      if (moods) {
+      const moodList = Array.isArray(moods) ? moods : [moods];
+      moodList.forEach((moodID) => {
+        // FIXED: Added the missing db.run() call
+        db.run("INSERT OR IGNORE INTO book_moods (book_id, mood_id) VALUES (?, ?)", [bookID, moodID]);
+      });
+    }
+      res.redirect("/books/manage");
+    },
+  );
+});
+
+router.post("/edit/:id", isAdmin, upload.single("cover"), (req, res) => {
+  res.render("/manage");
 });
 
 router.post("/delete/:id", isAdmin, (req, res) => {
