@@ -25,22 +25,22 @@ A web application specially designed for the Shropshire Bookfest pupils.
 ## LIBRARIAN MODE:
 
 - [ ] Edit book
-- [03.05.26] Add book
-- [01.05.26] 'Librarian Mode' - is_admin boolean in users table - 'Manage' button on the navbar which opens a manage page
+- [x] (03.05.26) Add book
+- [x] (01.05.26) 'Librarian Mode' - is_admin boolean in users table - 'Manage' button on the navbar which opens a manage page
 
-- [24.04.26] Create a basic login and registration process
-- [24.04.26] Create domains for profile, books, index
-- [30.04.26] Profile page requires login to access (a login required feature)
-- [30.04.26] Login keeps email first name and last name fields filled if they are incorrect as page reloads
+- [x] (24.04.26) Create a basic login and registration process
+- [x] (24.04.26) Create domains for profile, books, index
+- [x] (30.04.26) Profile page requires login to access (a login required feature)
+- [x] (30.04.26) Login keeps email first name and last name fields filled if they are incorrect as page reloads
 
 ## THE SEARCH FEATURE:
 
-1. [26.04.26] Initial load sync (check for '?q=...' and input that value)
-2. [27.04.26] Ensure the innerHTML made in Javascript uses the same CSS classes and struture as the server-side template: so that it doesn't jump/change styles
-3. [27.04.26] No results state: handle a case where the array is empty and show a friendly message 'no books found'
-4. [26.04.26] Use history.replaceState to keep the URL updated but not clutter up the user's history with lots of URLs
-5. [28.04.26] Debouncing - don't fetch on every keystroke, but use setTimeout to wait 300ms
-6. [28.04.26] Minimum character limit: trigger a fetch only if the user has typed two characters
+- [x] (26.04.26) Initial load sync (check for '?q=...' and input that value)
+- [x] (27.04.26) Ensure the innerHTML made in Javascript uses the same CSS classes and struture as the server-side template: so that it doesn't jump/change styles
+- [x] (27.04.26) No results state: handle a case where the array is empty and show a friendly message 'no books found'
+- [x] (26.04.26) Use history.replaceState to keep the URL updated but not clutter up the user's history with lots of URLs
+- [x](28.04.26) Debouncing - don't fetch on every keystroke, but use setTimeout to wait 300ms
+- [x] (28.04.26) Minimum character limit: trigger a fetch only if the user has typed two characters
 
 # COMMANDS:
 
