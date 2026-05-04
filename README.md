@@ -9,6 +9,7 @@ A web application specially designed for the Shropshire Bookfest pupils.
 - [ ] Home page integration with dynamic movement (use AOS animate on scroll library or LottieFiles)
 - [ ] Profile page which looks great and has books, badges and so forth
 - [ ] Multiple pages for the books page - so that you can click next and browse more of them. Maybe 30 per page (10 rows of 3)?
+- [x] (24.04.26) Create domains for profile, books, index
 
 ## BOOK FILTERING:
 
@@ -19,6 +20,7 @@ A web application specially designed for the Shropshire Bookfest pupils.
 
 - [ ] To be read tracker!
 - [x] (24.04.26) Create a basic login and registration process
+- [x] (30.04.26) Profile page requires login to access (a login required feature)
 - [ ] Mark as read - drag it to a bookshelf?
 
 ## BOOK REVIEWS
@@ -31,17 +33,11 @@ A web application specially designed for the Shropshire Bookfest pupils.
 
 ## LIBRARIAN MODE (ADMIN):
 
-- [ ] Edit book feature on the manage page (including Book Award Years)
+- [x] (04.05.26) Edit book feature on the manage page (including Book Award Years)
 - [x] (03.05.26) Add book
 - [x] (01.05.26) 'Librarian Mode' - is_admin boolean in users table - 'Manage' button on the navbar which opens a manage page
 - [ ] Pending status on reviews and only admins can moderate
 - [ ] Keyword filtering - reject a list of banned words on reviews before they reach the database
-
-## GENERAL:
-
-- [x] (24.04.26) Create domains for profile, books, index
-- [x] (30.04.26) Profile page requires login to access (a login required feature)
-- [x] (30.04.26) Login keeps email first name and last name fields filled if they are incorrect as page reloads
 
 ## FUN AND GAMES
 
@@ -61,9 +57,10 @@ A web application specially designed for the Shropshire Bookfest pupils.
 - [x] (28.04.26) Debouncing - don't fetch on every keystroke, but use setTimeout to wait 300ms
 - [x] (28.04.26) Minimum character limit: trigger a fetch only if the user has typed two characters
 
-## ADMIN AND EDITING
+## ADMIN, UX AND EDITING
 
-- [ ] Session stays open for debugging (reduce times I (the admin) have to login when I'm programming)
+- [x] Session stays open for debugging (reduce times I (the admin) have to login when I'm programming)
+- [x] (30.04.26) Login keeps email first name and last name fields filled if they are incorrect as page reloads
 
 # COMMANDS:
 

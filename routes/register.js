@@ -5,8 +5,8 @@ const db = new sqlite3.Database("databases/bookfest.db");
 import bcrypt from "bcrypt";
 const router = Router();
 
+// I looked back at the registration implementation from 'Finance' to help with this part of the project.
 // Register user
-
 router
   .route("/")
   .get((req, res) => {

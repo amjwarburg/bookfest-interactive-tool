@@ -1,9 +1,5 @@
 let timeout;
 
-const input = document.querySelector("input");
-
-input.addEventListener("input", (query) => {});
-
 const display = (data) => {
   if (data.length == 0) {
     const createNoResults = document.createElement("h3");
@@ -59,6 +55,7 @@ searchInput.addEventListener("input", async (readEvent) => {
   const newURL = window.location.pathname + "?q=" + encodeURIComponent(query);
   window.history.replaceState(null, "", newURL);
 
+  // I learned about debouncing from Gemini and this is how I implemented it.
   clearTimeout(timeout);
   timeout = setTimeout(async () => {
     // Fetch from Express API

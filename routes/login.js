@@ -9,6 +9,7 @@ router.get("/", (req, res) => {
   res.render("login");
 });
 
+// I partly based this login POST route on the one from the CS50 'Finance' app
 router.post("/", (req, res) => {
   const { email, password } = req.body;
   async function loginUser() {

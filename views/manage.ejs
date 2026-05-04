@@ -10,7 +10,7 @@
 <body>
     <%- include('layout'); %>
 <main class="container mt-5">
-    <h2>Add Book</h2>
+    <h2>Add New Book</h2>
     <form action="/books/manage" method="POST" enctype="multipart/form-data">
   <div class="form-row">
     <div class="form-group col-sm-3 px-2 pb-4">
@@ -57,7 +57,7 @@
     </div>
   </div>
   <div class="mb-3">
-        <label for="bookCover" class="form-label">Book Cover Image</label>
+        <label for="coverInput" class="form-label">Book Cover Image</label>
         <input 
             class="form-control" 
             type="file" 
@@ -94,8 +94,9 @@
             <td><%= book.author %></td>
             <td>
                 <div class="d-flex" style="gap: 0.5rem">
-                <form action="/books/edit/<%= book.id %>" method="POST" onsubmit="return confirm('Edit this book?')"></form>
-                <button type="submit" class="btn btn-success btn-sm">Edit</button>
+                <form method="GET">
+                <a class="btn btn-success btn-sm" href="/books/edit/<%= book.id %>">Edit</a>
+                </form>
             
                 <form action="/books/delete/<%= book.id %>" method="POST" onsubmit="return confirm('Delete this book?')">
                 

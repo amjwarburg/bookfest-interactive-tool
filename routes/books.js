@@ -41,6 +41,7 @@ router.get("/api/search", (req, res) => {
     });
 });
 
+// Gemini suggested I change this to use async/await, so that will be on my TODO.
 router.get("/manage", isAdmin, (req, res) => {
   db.all("SELECT * FROM books", (err, books) => {
     if (err) return res.status(500).send("Database error (books");
@@ -54,6 +55,7 @@ router.get("/manage", isAdmin, (req, res) => {
   });
 });
 
+// I had to study the documentation for Multer to work out how to handle file uploads, and I asked Gemini for some help with its implementation.
 router.post("/manage", isAdmin, upload.single("cover"), (req, res) => {
   const { title, author, publication_year, reading_age, genres, moods } =
     req.body;
@@ -83,7 +85,6 @@ router.post("/manage", isAdmin, upload.single("cover"), (req, res) => {
       if (moods) {
       const moodList = Array.isArray(moods) ? moods : [moods];
       moodList.forEach((moodID) => {
-        // FIXED: Added the missing db.run() call
         db.run("INSERT OR IGNORE INTO book_moods (book_id, mood_id) VALUES (?, ?)", [bookID, moodID]);
       });
     }
@@ -92,8 +93,87 @@ router.post("/manage", isAdmin, upload.single("cover"), (req, res) => {
   );
 });
 
+router.get("/edit/:id", isAdmin, (req, res) => {
+  db.get("SELECT * FROM books WHERE id = ?", [req.params.id], (err, book) => {
+    if (err) return res.status(500).send("Edit failed");
+    db.all(
+      "SELECT genre_id FROM book_genres WHERE book_id = ?",
+      [req.params.id],
+      (err, bookGenres) => {
+        if (err)
+          return res.status(500).send("Edit failed, couldn't get genres");
+        db.all(
+          "SELECT mood_id FROM book_moods WHERE book_id = ?",
+          [req.params.id],
+          (err, bookMoods) => {
+            if (err)
+              return res.status(500).send("Edit failed, couldn't get moods");
+            db.all("SELECT * FROM moods", (err, allMoods) => {
+              if (err) return res.status(500).send("Database error (moods");
+              db.all("SELECT * FROM genres", (err, allGenres) => {
+                if (err) return res.status(500).send("Database error (genres)");
+                res.render("edit", {
+                  book: book,
+                  // CurrentMoods and CurrentGenres mapping suggested by Gemini
+                  currentMoods: bookMoods.map((m) => m.mood_id),
+                  currentGenres: bookGenres.map((g) => g.genre_id),
+                  allGenres: allGenres,
+                  allMoods: allMoods,
+                });
+              });
+            });
+          },
+        );
+      },
+    );
+  });
+});
+
 router.post("/edit/:id", isAdmin, upload.single("cover"), (req, res) => {
-  res.render("/manage");
+  const { title, author, publication_year, reading_age, genres, moods } =
+    req.body;
+
+  let sql =
+    "UPDATE books SET title = ?, author = ?, publication_year = ?, reading_age = ? WHERE id = ?";
+  let params = [title, author, publication_year, reading_age, req.params.id];
+
+  if (req.file) {
+    sql =
+      "UPDATE books SET title = ?, author = ?, publication_year = ?, reading_age = ?, cover_image = ? WHERE id = ?";
+    params = [
+      title,
+      author,
+      publication_year,
+      reading_age,
+      `/images/book_covers/${req.file.originalname}`,
+      req.params.id,
+    ];
+  }
+
+  db.run(sql, params, (err) => {
+    if (err) return res.status(500).send("Error updating book");
+
+    // prettier-ignore
+    db.run("DELETE FROM book_genres WHERE book_id = ?", [req.params.id], () => {
+      if (genres) {
+        const genreList = Array.isArray(genres) ? genres : [genres];
+        genreList.forEach((genreId) => {
+          db.run("INSERT INTO book_genres (book_id, genre_id) VALUES (?, ?)", [req.params.id, genreId]);
+        });
+      }
+    });
+
+    // prettier-ignore
+    db.run("DELETE FROM book_moods WHERE book_id = ?", [req.params.id], () => {
+      if (moods) {
+        const moodList = Array.isArray(moods) ? moods : [moods];
+        moodList.forEach((moodId) => {
+          db.run("INSERT INTO book_moods (book_id, mood_id) VALUES (?, ?)", [req.params.id, moodId]);
+        });
+      }
+    });
+    res.redirect("/books/manage");
+  });
 });
 
 router.post("/delete/:id", isAdmin, (req, res) => {

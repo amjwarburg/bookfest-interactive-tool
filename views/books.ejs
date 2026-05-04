@@ -6,6 +6,8 @@
     <title>Books</title>
     <link rel="stylesheet" href="/styles.css" />
     <script>
+
+      // I learned about SweetALert2 from Gemini. I used it to make several popups look nicer.
         document.addEventListener('DOMContentLoaded', () => {
         const urlParams = new URLSearchParams(window.location.search);
 
@@ -27,7 +29,7 @@
       <form class="form-inline">
         <div class="search-bar-container">
         <input class="form-control mr-sm-2" id="book-search" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-success my-2 my-sm-0" type="submit">Search</button>
+
         <% if (user && user.is_admin === 1) { %>
         <a href="/books/manage" class="btn btn-dark">Manage</a>
         <% } %>

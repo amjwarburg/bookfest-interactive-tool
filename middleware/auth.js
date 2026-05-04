@@ -7,6 +7,7 @@ const db = new sqlite3.Database("databases/bookfest.db");
 
 const router = Router();
 
+// I asked Gemini how to implement authentication in Express and it suggested creating a middleware function. This is how I implemented it:
 export const ensureAuthenticated = (req, res, next) => {
   if (req.session && req.session.user) {
     return next();
@@ -15,9 +16,10 @@ export const ensureAuthenticated = (req, res, next) => {
   }
 };
 
+// I asked Gemini how to implement admin-only routes, it suggested implement a middleware function. This is how I implemented it:
 export const isAdmin = (req, res, next) => {
   // Check if user is logged in
-  if (!req.session.user) return res.redirect("/users/login");
+  if (!req.session.user) return res.redirect("/users/login?not_admin=true");
 
   db.get(
     "SELECT is_admin FROM users WHERE id = ?",

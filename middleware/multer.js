@@ -1,3 +1,5 @@
+// I asked Gemini how to work with file uploads in Express, and it suggested using the Multer middleware. Here's how I set it up to handle book cover image uploads:
+
 import multer from "multer";
 import path from "path";
 import { fileURLToPath } from "url";
