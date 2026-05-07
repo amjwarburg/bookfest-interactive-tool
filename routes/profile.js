@@ -1,4 +1,3 @@
-import express from "express";
 import { Router } from "express";
 import sqlite3 from "sqlite3";
 import { ensureAuthenticated } from "../middleware/auth.js";
@@ -22,6 +21,7 @@ router.route("/:id").get(ensureAuthenticated, (req, res) => {
         console.error(err);
         return res.status(500).send("Error retrieving user profile");
       }
+      if (!row) return res.status(404).send("User not found");
       res.render("profile", {
         user: row,
       });

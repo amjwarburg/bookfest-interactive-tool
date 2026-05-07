@@ -39,8 +39,15 @@
     <div class="books-grid" id="books-grid">
         <% for (let book of books) {%>
             <div class="book-card">
-                <img class="book-card-cover" src="<%= book.cover_image %>">
-                <button class="book-card-middle prevent-select">Add Book</button>
+              
+                <a href="/books/info/<%= book.id %>">
+                  <img class="book-card-cover" src="<%= book.cover_image %>">
+                </a>
+                <form action="/books/<%= book.id %>" method="POST">
+                <% if (user) { %>
+                <button type="submit" class="book-card-middle prevent-select">Add!</button>
+                <% } %>
+                </form>
                 <h5 id="book-card-title" class="book-card-title book-card-text"><%= book.title %></h5>
                 <h6 class="book-card-author book-card-text"><%= book.author%></h6>
             </div>
@@ -51,4 +58,5 @@
     </div>
   </body>
   <script src="/js/search.js"></script>
+  <script src="/js/toggle.js"></script>
 </html>

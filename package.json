@@ -21,12 +21,14 @@
   "dependencies": {
     "bcrypt": "^6.0.0",
     "bootstrap": "^5.3.8",
+    "dotenv": "^17.4.2",
     "ejs": "^5.0.2",
     "express": "^5.2.1",
     "express-session": "^1.19.0",
     "multer": "^2.1.1",
     "nodemailer": "^8.0.7",
-    "sqlite3": "^6.0.1"
+    "sqlite3": "^6.0.1",
+    "trig-js": "^4.2.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"
