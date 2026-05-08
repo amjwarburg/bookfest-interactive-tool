@@ -88,6 +88,19 @@ body {
   transition: 0.5s ease;
 }
 
+/* Slightly larger cover image used on the book info page */
+.book-info-cover {
+  width: auto;
+  height: 22rem;
+  display: block;
+}
+
+/* Applied to the button when a book has been added but not yet marked as read */
+.not-read {
+  background-color: #e0424e;
+  transition: 0.5s ease;
+}
+
 .prevent-select {
   -webkit-user-select: none; /* Safari */
   -ms-user-select: none; /* IE 10 and IE 11 */

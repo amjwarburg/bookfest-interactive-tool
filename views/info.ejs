@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= book.title %></title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <%- include('layout') %>
+  <main class="container mt-5">
+    <a href="/books" class="btn btn-secondary mb-4">&larr; Back to Books</a>
+    <div class="d-flex gap-5 align-items-start">
+
+      <img src="<%= book.cover_image %>" alt="<%= book.title %> cover" class="book-info-cover">
+
+      <div>
+        <h1 style="color: #e0424e;"><%= book.title %></h1>
+        <h4 class="text-muted mb-1"><%= book.author %></h4>
+        <p class="mb-0"><strong>Published:</strong> <%= book.publication_year %></p>
+        <p class="mb-4"><strong>Reading Age:</strong> <%= book.reading_age %></p>
+
+        <h5>Description</h5>
+        <%# Show placeholder text when no description has been added yet %>
+        <% if (book.description) { %>
+          <%# pre-wrap preserves linebreaks entered in the textarea %>
+          <p style="white-space: pre-wrap"><%= book.description %></p>
+        <% } else { %>
+          <p class="text-muted fst-italic">No description yet.</p>
+        <% } %>
+
+        <h5 class="mt-4">About the Author</h5>
+        <%# Show placeholder text when no about_author has been added yet %>
+        <% if (book.about_author) { %>
+          <%# pre-wrap preserves linebreaks entered in the textarea %>
+          <p style="white-space: pre-wrap"><%= book.about_author %></p>
+        <% } else { %>
+          <p class="text-muted fst-italic">No author information yet.</p>
+        <% } %>
+      </div>
+
+    </div>
+  </main>
+</body>
+</html>

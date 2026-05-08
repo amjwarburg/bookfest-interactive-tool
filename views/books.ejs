@@ -38,8 +38,8 @@
     </nav>
     <div class="books-grid" id="books-grid">
         <% for (let book of books) { %>
-            <%# addedBookIds comes from the server (user_books table) so buttons start in the right state %>
-            <% const alreadyAdded = addedBookIds.includes(book.id); %>
+            <%# userBookStatuses maps book_id to status ('read' | 'not read'); undefined means not yet added %>
+            <% const bookStatus = userBookStatuses[book.id]; %>
             <div class="book-card">
                 <a href="/books/info/<%= book.id %>">
                   <img class="book-card-cover" src="<%= book.cover_image %>">
@@ -49,11 +49,12 @@
                 <form action="/books/<%= book.id %>" method="POST" class="add-book-form">
                   <%# Claude Code added this hidden field; toggle.js also sends the token as a header for the AJAX path %>
                   <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                  <%# 'read' → teal (.active), 'not read' → red (.not-read), unadded → no colour class %>
                   <button
                     type="submit"
-                    class="book-card-middle prevent-select<%= alreadyAdded ? ' active' : '' %>"
-                    <%= alreadyAdded ? 'disabled' : '' %>>
-                    <%= alreadyAdded ? '✅ Added!' : 'Add!' %>
+                    class="book-card-middle prevent-select<%= bookStatus === 'read' ? ' active' : bookStatus === 'not read' ? ' not-read' : '' %>">
+                    <%# Label reflects current status: unadded → 'Add!', not read → 'Not Read', read → 'Read ✅' %>
+                    <%= bookStatus === 'read' ? 'Read ✅' : bookStatus === 'not read' ? 'Not Read' : 'Add!' %>
                   </button>
                 </form>
                 <% } %>
@@ -64,9 +65,9 @@
     </div>
   </body>
   <script>
-    // Claude added this script block to expose server data as globals for search.js and toggle.js.
-    // addedBookIds is a Set for O(1) lookups; toggle.js also calls .add() on it when a book is added.
-    const addedBookIds = new Set(<%- JSON.stringify(addedBookIds) %>);
+    // Claude Code updated this to expose userBookStatuses (book_id → status) instead of a flat Set.
+    // toggle.js and search.js read and write this object to keep button labels in sync across searches.
+    const userBookStatuses = <%- JSON.stringify(userBookStatuses) %>;
     const isLoggedIn = <%= user ? 'true' : 'false' %>;
   </script>
   <script src="/js/search.js"></script>

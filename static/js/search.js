@@ -27,12 +27,19 @@ const renderBooks = (bookArray) => {
     createBookTitle.textContent = book.title;
     createBookAuthor.textContent = book.author;
 
-    createBookCard.append(createBookCover, createBookTitle, createBookAuthor);
+    // Claude Code added this link so cover images in search results navigate to the info page, matching books.ejs
+    const createBookLink = document.createElement("a");
+    createBookLink.href = `/books/info/${book.id}`;
+    createBookLink.append(createBookCover);
+    createBookCard.append(createBookLink, createBookTitle, createBookAuthor);
 
-    // Claude added the Add button logic below so search results match the main book grid
+    // Claude Code updated the Add button logic to use userBookStatuses (book_id → status map)
     if (typeof isLoggedIn !== "undefined" && isLoggedIn) {
-      // Check the in-memory set populated from the server so the button starts in the right state
-      const alreadyAdded = typeof addedBookIds !== "undefined" && addedBookIds.has(book.id);
+      // Check the in-memory map populated from the server so the button starts in the right state
+      const bookStatus =
+        typeof userBookStatuses !== "undefined"
+          ? userBookStatuses[book.id]
+          : null;
       const createForm = document.createElement("form");
       const createBookMiddle = document.createElement("button");
 
@@ -42,10 +49,15 @@ const renderBooks = (bookArray) => {
       createForm.method = "POST";
       createBookMiddle.classList.add("book-card-middle", "prevent-select");
       createBookMiddle.type = "submit";
-      createBookMiddle.textContent = alreadyAdded ? "✅ Added!" : "Add!";
-      if (alreadyAdded) {
+      // Label and colour reflect current status: unadded → 'Add!', not read → red, read → teal
+      if (bookStatus === "read") {
+        createBookMiddle.textContent = "Read ✅";
         createBookMiddle.classList.add("active");
-        createBookMiddle.disabled = true;
+      } else if (bookStatus === "not read") {
+        createBookMiddle.textContent = "Not Read";
+        createBookMiddle.classList.add("not-read");
+      } else {
+        createBookMiddle.textContent = "Add!";
       }
 
       createForm.append(createBookMiddle);

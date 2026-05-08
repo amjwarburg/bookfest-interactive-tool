@@ -14,8 +14,9 @@
     <%# Claude Code added this hidden field for CSRF protection; validateCsrfToken runs after multer so req.body is populated %>
     <form action="/books/edit/<%= book.id %>" method="POST" enctype="multipart/form-data">
       <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-  <div class="form-row">
-    <div class="form-group col-sm-3 px-2 pb-4">
+  <%# Top row: short metadata fields side by side %>
+  <div class="form-row mb-3">
+    <div class="form-group col-sm-3 px-2">
       <label>Title</label>
       <input type="text" name="title" class="form-control" value="<%= book.title %>" required>
     </div>
@@ -27,58 +28,57 @@
       <label>Publication Year</label>
       <input type="text" name="publication_year" class="form-control" value="<%= book.publication_year %>" required>
     </div>
-  <div class="form-group col-sm-3 px-2">
-    <label>Reading Age</label>
-    <input type="text" name="reading_age" class="form-control" value="<%= book.reading_age %>" required>
-    
-  </div>
-  <div class="form-group col-sm-3 px-2">
-    <div class="checkbox-separator">
-    <label>Genre(s)</label>
-    <div class="checkbox-interior">
-    <% allGenres.forEach(genre => { %>
-        <input type="checkbox" name="genres" value="<%= genre.id %>" id="g<%= genre.id %>" <% if (currentGenres.includes(genre.id)) { %> checked <% } %>>
-        <label for="g<%= genre.id %>" class="me-3"><%= genre.name %></label><br>
-    <% }) %>
-
-    </div>
-    </div>
-  </div>
-  <div class="form-group col-sm-3 px-2">
-    <div class="checkbox-separator">
-    <label>Mood(s)</label>
-    <div class="checkbox-interior">
-    <% allMoods.forEach(mood => { %>
-        <input type="checkbox" name="moods" value="<%= mood.id %>" id="m<%= mood.id %>" <% if (currentMoods.includes(mood.id)) { %> checked <% } %>>
-        <label for="m<%= mood.id %>" class="me-3"><%= mood.emoji %> <%= mood.name %></label><br>
-    <% }) %>
-    </div>
+    <div class="form-group col-sm-3 px-2">
+      <label>Reading Age</label>
+      <input type="text" name="reading_age" class="form-control" value="<%= book.reading_age %>" required>
     </div>
     <div class="form-group col-sm-3 px-2">
-        
+      <div class="checkbox-separator">
+        <label>Genre(s)</label>
+        <div class="checkbox-interior">
+          <% allGenres.forEach(genre => { %>
+            <input type="checkbox" name="genres" value="<%= genre.id %>" id="g<%= genre.id %>" <% if (currentGenres.includes(genre.id)) { %> checked <% } %>>
+            <label for="g<%= genre.id %>" class="me-3"><%= genre.name %></label><br>
+          <% }) %>
+        </div>
+      </div>
+    </div>
+    <div class="form-group col-sm-3 px-2">
+      <div class="checkbox-separator">
+        <label>Mood(s)</label>
+        <div class="checkbox-interior">
+          <% allMoods.forEach(mood => { %>
+            <input type="checkbox" name="moods" value="<%= mood.id %>" id="m<%= mood.id %>" <% if (currentMoods.includes(mood.id)) { %> checked <% } %>>
+            <label for="m<%= mood.id %>" class="me-3"><%= mood.emoji %> <%= mood.name %></label><br>
+          <% }) %>
+        </div>
+      </div>
     </div>
   </div>
+
+  <%# Description and About the Author side by side, each taking half the width %>
+  <div class="form-row mb-3">
+    <div class="form-group col-sm-6 px-2">
+      <label>Description</label>
+      <textarea name="description" class="form-control" rows="4"><%= book.description %></textarea>
+    </div>
+    <div class="form-group col-sm-6 px-2">
+      <label>About the Author</label>
+      <textarea name="about_author" class="form-control" rows="4"><%= book.about_author %></textarea>
+    </div>
+  </div>
+
+  <%# Cover image upload with generous preview space below %>
   <div class="mb-3">
-        <label for="coverInput" class="form-label">Book Cover Image</label>
-        <input 
-            class="form-control" 
-            type="file" 
-            id="coverInput" 
-            name="cover" 
-            accept="image/*" 
-        >
-        <div class="form-text">Please upload a clear book cover image.</div>
-    
-    <!-- Preview Area -->
-    <div class="mb-3 text-center preview-box">
-        <img id="coverPreview" src="<%= book.cover_image %>" alt="Preview" class="img-thumbnail" style="max-height: 200px;">
-    </div>
+    <label for="coverInput" class="form-label">Book Cover Image</label>
+    <input class="form-control" type="file" id="coverInput" name="cover" accept="image/*">
+    <div class="form-text">Please upload a clear book cover image.</div>
+    <div class="mt-3 text-center preview-box">
+      <img id="coverPreview" src="<%= book.cover_image %>" alt="Preview" class="img-thumbnail" style="max-height: 300px;">
     </div>
   </div>
-    
-  </div>
-  <button type="submit" class=" btn btn-primary mx-auto" style="display: block" >Update Book</button>
-</div>
+
+  <button type="submit" class="btn btn-primary mx-auto" style="display: block">Update Book</button>
 </main>
 </body>
 </html>

@@ -38,6 +38,28 @@ app.use(generateCsrfToken);
 
 const db = new sqlite3.Database("databases/bookfest.db");
 
+// Add status column if it doesn't exist yet (safe to run on every startup)
+db.run(
+  "ALTER TABLE user_books ADD COLUMN status TEXT NOT NULL DEFAULT 'not read'",
+  (err) => {
+    if (err && !err.message.includes("duplicate column")) {
+      console.error("Migration error:", err.message);
+    }
+  }
+);
+
+// Add description and about_author columns to books if they don't exist yet
+db.run("ALTER TABLE books ADD COLUMN description TEXT NOT NULL DEFAULT ''", (err) => {
+  if (err && !err.message.includes("duplicate column")) {
+    console.error("Migration error:", err.message);
+  }
+});
+db.run("ALTER TABLE books ADD COLUMN about_author TEXT NOT NULL DEFAULT ''", (err) => {
+  if (err && !err.message.includes("duplicate column")) {
+    console.error("Migration error:", err.message);
+  }
+});
+
 app.use((req, res, next) => {
   res.locals.session = req.session;
   res.locals.user = req.session.user || null;
