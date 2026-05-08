@@ -37,3 +37,9 @@
     </div>
 </nav>
 </div>
+<script>
+  // Claude Code added this to expose the CSRF token to AJAX requests in toggle.js.
+  // The token is generated server-side and injected here so fetch() can send it
+  // as the X-CSRF-Token header without needing a hidden form field.
+  const csrfToken = <%- JSON.stringify(csrfToken || "") %>;
+</script>

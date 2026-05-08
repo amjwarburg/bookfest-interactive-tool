@@ -26,6 +26,17 @@
         })});
         </script>
         <% } %>
+        <%# Claude Code added this block to show a friendly error when the email is already registered %>
+        <% if (typeof errorDuplicate !== 'undefined') { %>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+        Swal.fire({
+            icon: 'error',
+            title: 'Already registered!',
+            text: '<%= errorDuplicate %>',
+        })});
+        </script>
+        <% } %>
     <title>Register</title>
 
 </head>
@@ -33,6 +44,8 @@
     <%- include('layout'); %>
     <h1 class="text-center" id="page-prompt">Sign up for a Bookfest account!</h1>
     <form action="/users/register" method="post">
+        <%# Claude Code added this hidden field for CSRF protection %>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <div class="form-row justify-content-md-center mb-3">
             <div class="form-col" mb-3>
             <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="firstName" placeholder="First Name" required type="text" value="<%= typeof oldFirstName !== 'undefined' ? oldFirstName : '' %>">

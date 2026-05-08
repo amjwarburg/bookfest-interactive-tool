@@ -11,7 +11,9 @@
     <%- include('layout'); %>
 <main class="container mt-5">
     <h2>Add New Book</h2>
+    <%# Claude Code added this hidden field for CSRF protection; validateCsrfToken runs after multer so req.body is populated %>
     <form action="/books/manage" method="POST" enctype="multipart/form-data">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
   <div class="form-row">
     <div class="form-group col-sm-3 px-2 pb-4">
       <label>Title</label>
@@ -99,7 +101,8 @@
                 </form>
             
                 <form action="/books/delete/<%= book.id %>" method="POST" onsubmit="return confirm('Delete this book?')">
-                
+                <%# Claude Code added this hidden field for CSRF protection %>
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                 <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                 </form>
                 </div>

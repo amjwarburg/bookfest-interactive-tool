@@ -5,7 +5,8 @@ import session from "express-session";
 import profileRouter from "./routes/profile.js";
 import booksRouter from "./routes/books.js";
 import authRouter from "./middleware/auth.js";
-import bcrypt from "bcrypt";
+// Claude Code added this import for CSRF protection
+import { generateCsrfToken } from "./middleware/csrf.js";
 
 // Initialise app
 const app = express();
@@ -30,6 +31,10 @@ app.use(
 );
 
 app.use(express.static("static"));
+
+// Claude Code added this: generate a CSRF token for every session and expose it
+// to EJS templates via res.locals so all forms can include it
+app.use(generateCsrfToken);
 
 const db = new sqlite3.Database("databases/bookfest.db");
 

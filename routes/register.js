@@ -2,16 +2,15 @@ import { Router } from "express";
 import sqlite3 from "sqlite3";
 const db = new sqlite3.Database("databases/bookfest.db");
 import bcrypt from "bcrypt";
+// Claude Code added this import for CSRF validation
+import { validateCsrfToken } from "../middleware/csrf.js";
 const router = Router();
 
 // I looked back at the registration implementation from 'Finance' to help with this part of the project.
+// Claude Code added validateCsrfToken and duplicate-email error handling.
 // Register user
-router
-  .route("/")
-  .get((req, res) => {
-    res.render("register");
-  })
-  .post((req, res) => {
+router.get("/", (req, res) => res.render("register"));
+router.post("/", validateCsrfToken, (req, res) => {
     if (!req.body.firstName) {
       return res.status(400).send("First name is required");
     }
@@ -56,6 +55,17 @@ router
         [req.body.firstName, req.body.lastName, req.body.email, hashedPassword],
         function (err) {
           if (err) {
+            // Claude Code added this check: SQLITE_CONSTRAINT means the email column's
+            // UNIQUE constraint fired, i.e. the email is already registered.
+            // Previously this fell through to a generic 500 error.
+            if (err.code === "SQLITE_CONSTRAINT") {
+              return res.status(400).render("register", {
+                errorDuplicate: "An account with that email already exists.",
+                oldFirstName: req.body.firstName,
+                oldLastName: req.body.lastName,
+                oldEmail: req.body.email,
+              });
+            }
             console.error(err);
             return res.status(500).send("Error registering user");
           }

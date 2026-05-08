@@ -18,27 +18,40 @@ const renderBooks = (bookArray) => {
     const createBookTitle = document.createElement("h5");
     const createBookAuthor = document.createElement("p");
     const createBookCover = document.createElement("img");
-    const createBookMiddle = document.createElement("button");
 
     createBookCard.classList.add("book-card");
     createBookCover.classList.add("book-card-cover");
     createBookAuthor.classList.add("book-card-author");
     createBookTitle.classList.add("book-card-title");
-    createBookMiddle.classList.add("book-card-middle");
     createBookCover.src = book.cover_image;
+    createBookTitle.textContent = book.title;
+    createBookAuthor.textContent = book.author;
 
-    document.getElementById("book-card");
-    let bookAuthor = book.author;
-    let bookTitle = book.title;
-    createBookTitle.textContent = bookTitle;
-    createBookMiddle.textContent = "Add Book";
-    createBookAuthor.textContent = bookAuthor;
-    createBookCard.append(
-      createBookCover,
-      createBookTitle,
-      createBookAuthor,
-      createBookMiddle,
-    );
+    createBookCard.append(createBookCover, createBookTitle, createBookAuthor);
+
+    // Claude added the Add button logic below so search results match the main book grid
+    if (typeof isLoggedIn !== "undefined" && isLoggedIn) {
+      // Check the in-memory set populated from the server so the button starts in the right state
+      const alreadyAdded = typeof addedBookIds !== "undefined" && addedBookIds.has(book.id);
+      const createForm = document.createElement("form");
+      const createBookMiddle = document.createElement("button");
+
+      // The form action must be set so toggle.js can POST to the correct endpoint
+      createForm.classList.add("add-book-form");
+      createForm.action = `/books/${book.id}`;
+      createForm.method = "POST";
+      createBookMiddle.classList.add("book-card-middle", "prevent-select");
+      createBookMiddle.type = "submit";
+      createBookMiddle.textContent = alreadyAdded ? "✅ Added!" : "Add!";
+      if (alreadyAdded) {
+        createBookMiddle.classList.add("active");
+        createBookMiddle.disabled = true;
+      }
+
+      createForm.append(createBookMiddle);
+      createBookCard.append(createForm);
+    }
+
     booksGrid.append(createBookCard);
   });
 };

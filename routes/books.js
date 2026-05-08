@@ -1,6 +1,8 @@
 import { Router } from "express";
 import sqlite3 from "sqlite3";
-import { isAdmin } from "../middleware/auth.js";
+import { isAdmin, ensureAuthenticated } from "../middleware/auth.js";
+// Claude Code added this import for CSRF validation
+import { validateCsrfToken } from "../middleware/csrf.js";
 import upload from "../middleware/multer.js";
 import { promisify } from "node:util";
 import { stat } from "node:fs";
@@ -10,24 +12,39 @@ const collectData = promisify(db.all.bind(db));
 const runQuery = promisify(db.run.bind(db));
 const getOne = promisify(db.get.bind(db));
 
-router.get("/", (req, res) => {
-  db.all("SELECT * FROM books", (err, rows) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).send("Error retrieving books");
+router.get("/", async (req, res) => {
+  try {
+    const books = await collectData("SELECT * FROM books");
+    // Claude added this: fetch the IDs of books this user has already added so the template can
+    // render each "Add!" button in the correct initial state without a second fetch
+    let addedBookIds = [];
+    if (req.session.user) {
+      const userBooks = await collectData(
+        "SELECT book_id FROM user_books WHERE user_id = ?",
+        [req.session.user.id]
+      );
+      addedBookIds = userBooks.map((r) => r.book_id);
     }
-    res.render("books", { books: rows });
-  });
+    res.render("books", { books, addedBookIds });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error retrieving books");
+  }
 });
 
-// TO DO - implement user 'has read'functionality
-router.post("/:id", (req, res) => {
+// Claude added ensureAuthenticated, INSERT OR IGNORE, JSON response, and CSRF validation.
+// ensureAuthenticated prevents unauthenticated POSTs; INSERT OR IGNORE silently skips duplicates;
+// returning JSON instead of redirecting lets the client update the button via AJAX.
+router.post("/:id", ensureAuthenticated, validateCsrfToken, (req, res) => {
   db.run(
-    "INSERT INTO user_books (user_id, book_id) VALUES (?, ?)",
+    "INSERT OR IGNORE INTO user_books (user_id, book_id) VALUES (?, ?)",
     [req.session.user.id, req.params.id],
     (err) => {
-      if (err) console.error(err);
-      res.redirect("/books");
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ success: false });
+      }
+      res.json({ success: true });
     },
   );
 });
@@ -77,7 +94,9 @@ router.get("/manage", isAdmin, (req, res) => {
 });
 
 // I had to study the documentation for Multer to work out how to handle file uploads, and I asked Gemini for some help with its implementation.
-router.post("/manage", isAdmin, upload.single("cover"), (req, res) => {
+// Claude Code added validateCsrfToken here AFTER upload.single so multer has already
+// populated req.body with the hidden _csrf field before the token is checked.
+router.post("/manage", isAdmin, upload.single("cover"), validateCsrfToken, (req, res) => {
   const { title, author, publication_year, reading_age, genres, moods } =
     req.body;
   const coverPath = req.file
@@ -140,7 +159,8 @@ router.get("/edit/:id", isAdmin, async (req, res) => {
   }
 });
 
-router.post("/edit/:id", isAdmin, upload.single("cover"), async (req, res) => {
+// Claude Code added validateCsrfToken after upload.single for the same reason as /manage above
+router.post("/edit/:id", isAdmin, upload.single("cover"), validateCsrfToken, async (req, res) => {
   const { title, author, publication_year, reading_age, genres, moods } =
     req.body;
 
@@ -191,7 +211,8 @@ router.post("/edit/:id", isAdmin, upload.single("cover"), async (req, res) => {
   }
 });
 
-router.post("/delete/:id", isAdmin, (req, res) => {
+// Claude Code added validateCsrfToken to the delete route
+router.post("/delete/:id", isAdmin, validateCsrfToken, (req, res) => {
   db.run("DELETE FROM books WHERE id = ?", [req.params.id], (err) => {
     if (err) return res.status(500).send("Delete failed");
     res.redirect("/books/manage");

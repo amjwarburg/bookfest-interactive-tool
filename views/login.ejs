@@ -52,6 +52,8 @@
     <%- include('layout'); %>
     <h1 class="text-center" id="page-prompt">Log in to your Bookfest account!</h1>
     <form action="/users/login" method="post">
+        <%# Claude Code added this hidden field for CSRF protection %>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <div class="form-row justify-content-md-center mb-3">
             <div class="mb-1">
             <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="email" placeholder="Email" required type="email" value="<%= typeof oldEmail !== 'undefined' ? oldEmail : '' %>">

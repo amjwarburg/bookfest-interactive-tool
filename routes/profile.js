@@ -12,7 +12,16 @@ router.get("/", (req, res) => {
   }
 });
 
+// Claude implemented this ensureAthenticated check for me
 router.route("/:id").get(ensureAuthenticated, (req, res) => {
+  if (
+    parseInt(req.params.id) !== req.session.user.id &&
+    !req.session.user.is_admin
+  ) {
+    return res.status(403).send("Forbidden");
+  }
+
+  // I implemented this profile sqlite sequence
   db.get(
     "SELECT id, firstName, lastName, email, is_admin FROM users WHERE id = ?",
     [req.params.id],

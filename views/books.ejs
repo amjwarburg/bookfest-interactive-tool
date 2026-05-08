@@ -37,26 +37,38 @@
       </form>
     </nav>
     <div class="books-grid" id="books-grid">
-        <% for (let book of books) {%>
+        <% for (let book of books) { %>
+            <%# addedBookIds comes from the server (user_books table) so buttons start in the right state %>
+            <% const alreadyAdded = addedBookIds.includes(book.id); %>
             <div class="book-card">
-              
                 <a href="/books/info/<%= book.id %>">
                   <img class="book-card-cover" src="<%= book.cover_image %>">
                 </a>
-                <form action="/books/<%= book.id %>" method="POST">
                 <% if (user) { %>
-                <button type="submit" class="book-card-middle prevent-select">Add!</button>
-                <% } %>
+                <%# The form's action is read by toggle.js to build the POST URL %>
+                <form action="/books/<%= book.id %>" method="POST" class="add-book-form">
+                  <%# Claude Code added this hidden field; toggle.js also sends the token as a header for the AJAX path %>
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                  <button
+                    type="submit"
+                    class="book-card-middle prevent-select<%= alreadyAdded ? ' active' : '' %>"
+                    <%= alreadyAdded ? 'disabled' : '' %>>
+                    <%= alreadyAdded ? '✅ Added!' : 'Add!' %>
+                  </button>
                 </form>
-                <h5 id="book-card-title" class="book-card-title book-card-text"><%= book.title %></h5>
+                <% } %>
+                <h5 class="book-card-title book-card-text"><%= book.title %></h5>
                 <h6 class="book-card-author book-card-text"><%= book.author%></h6>
             </div>
         <% } %>
     </div>
   </body>
-</html>
-    </div>
-  </body>
+  <script>
+    // Claude added this script block to expose server data as globals for search.js and toggle.js.
+    // addedBookIds is a Set for O(1) lookups; toggle.js also calls .add() on it when a book is added.
+    const addedBookIds = new Set(<%- JSON.stringify(addedBookIds) %>);
+    const isLoggedIn = <%= user ? 'true' : 'false' %>;
+  </script>
   <script src="/js/search.js"></script>
   <script src="/js/toggle.js"></script>
 </html>

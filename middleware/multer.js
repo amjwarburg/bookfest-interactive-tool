@@ -16,9 +16,24 @@ const storage = multer.diskStorage({
   },
 });
 
+// Claude Code added this fileFilter at the user's request to prevent non-image uploads.
+// Without it, an attacker could upload an .html file that Express serves with the correct
+// MIME type, enabling stored XSS via the static file server.
+const fileFilter = (req, file, cb) => {
+  const allowed = /jpeg|jpg|png|gif|webp/;
+  const validExt = allowed.test(path.extname(file.originalname).toLowerCase());
+  const validMime = allowed.test(file.mimetype);
+  if (validExt && validMime) {
+    cb(null, true);
+  } else {
+    cb(new Error("Only image files (jpg, png, gif, webp) are allowed"));
+  }
+};
+
 const upload = multer({
   storage: storage,
   limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter: fileFilter,
 });
 
 export default upload;

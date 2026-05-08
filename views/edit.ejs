@@ -11,7 +11,9 @@
     <%- include('layout'); %>
 <main class="container mt-5">
     <h2>Edit Book</h2>
+    <%# Claude Code added this hidden field for CSRF protection; validateCsrfToken runs after multer so req.body is populated %>
     <form action="/books/edit/<%= book.id %>" method="POST" enctype="multipart/form-data">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
   <div class="form-row">
     <div class="form-group col-sm-3 px-2 pb-4">
       <label>Title</label>
