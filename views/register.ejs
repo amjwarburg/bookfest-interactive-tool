@@ -11,7 +11,7 @@
         Swal.fire({
             icon: 'error',
             title: 'Longer password, please!',
-            text: '<%= errorMessage1 %>',
+            text: <%- JSON.stringify(errorMessage1) %>,
         })});
         </script>
         <% } %>
@@ -22,7 +22,7 @@
         Swal.fire({
             icon: 'error',
             title: 'Oops!',
-            text: '<%= errorMessage2 %>',
+            text: <%- JSON.stringify(errorMessage2) %>,
         })});
         </script>
         <% } %>
@@ -33,7 +33,7 @@
         Swal.fire({
             icon: 'error',
             title: 'Already registered!',
-            text: '<%= errorDuplicate %>',
+            text: <%- JSON.stringify(errorDuplicate) %>,
         })});
         </script>
         <% } %>

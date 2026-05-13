@@ -2,6 +2,13 @@ body {
   padding-bottom: 3em;
 }
 
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: -5px;
+  padding-top: 3rem;
+}
+
 .form-row {
   display: flex;
   flex-wrap: wrap;
@@ -146,4 +153,8 @@ body {
 
 .preview-box img {
   transition: transform 0.3s ease;
+}
+
+.genre-container {
+  display: block;
 }

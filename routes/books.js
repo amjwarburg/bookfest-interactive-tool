@@ -19,6 +19,7 @@ router.get("/", async (req, res) => {
     // render each "Add!" button in the correct initial state without a second fetch
     // userBookStatuses maps book_id → status ('read' | 'not read') for the current user
     let userBookStatuses = {};
+    const genres = await collectData("SELECT * FROM genres");
     if (req.session.user) {
       const userBooks = await collectData(
         "SELECT book_id, status FROM user_books WHERE user_id = ?",
@@ -28,7 +29,8 @@ router.get("/", async (req, res) => {
         userBookStatuses[r.book_id] = r.status;
       });
     }
-    res.render("books", { books, userBookStatuses });
+
+    res.render("books", { books, userBookStatuses, genres });
   } catch (err) {
     console.error(err);
     res.status(500).send("Error retrieving books");
@@ -97,10 +99,29 @@ router.get("/api/search", (req, res) => {
     });
 });
 
+router.get("/api/filter", async (req, res) => {
+  const genreID = req.query.genre;
+  if (!genreID) return res.json([]);
+  try {
+    const rows = await collectData(
+      `SELECT books.* FROM books
+      JOIN book_genres ON books.id = book_genres.book_id
+      WHERE book_genres.genre_id = ?`,
+      [genreID],
+    );
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error filtering books" });
+  }
+});
+
 // Claude Code added this route to render the book detail page
 router.get("/info/:id", async (req, res) => {
   try {
-    const book = await getOne("SELECT * FROM books WHERE id = ?", [req.params.id]);
+    const book = await getOne("SELECT * FROM books WHERE id = ?", [
+      req.params.id,
+    ]);
     if (!book) return res.status(404).send("Book not found");
     res.render("info", { book });
   } catch (err) {
@@ -138,8 +159,16 @@ router.post(
   validateCsrfToken,
   (req, res) => {
     // Claude Code added description and about_author to the destructure and INSERT
-    const { title, author, publication_year, reading_age, genres, moods, description, about_author } =
-      req.body;
+    const {
+      title,
+      author,
+      publication_year,
+      reading_age,
+      genres,
+      moods,
+      description,
+      about_author,
+    } = req.body;
     const coverPath = req.file
       ? `/images/book_covers/${req.file.originalname}`
       : "/images/book_covers/default.png";
@@ -148,7 +177,15 @@ router.post(
 
     db.run(
       bookSql,
-      [title, author, publication_year, reading_age, coverPath, description || "", about_author || ""],
+      [
+        title,
+        author,
+        publication_year,
+        reading_age,
+        coverPath,
+        description || "",
+        about_author || "",
+      ],
       function (err) {
         if (err) return res.status(500).send("Error adding book");
 
@@ -215,12 +252,28 @@ router.post(
   validateCsrfToken,
   async (req, res) => {
     // Claude Code added description and about_author to the destructure and UPDATE
-    const { title, author, publication_year, reading_age, genres, moods, description, about_author } =
-      req.body;
+    const {
+      title,
+      author,
+      publication_year,
+      reading_age,
+      genres,
+      moods,
+      description,
+      about_author,
+    } = req.body;
 
     let sql =
       "UPDATE books SET title = ?, author = ?, publication_year = ?, reading_age = ?, description = ?, about_author = ? WHERE id = ?";
-    let params = [title, author, publication_year, reading_age, description || "", about_author || "", req.params.id];
+    let params = [
+      title,
+      author,
+      publication_year,
+      reading_age,
+      description || "",
+      about_author || "",
+      req.params.id,
+    ];
 
     if (req.file) {
       sql =

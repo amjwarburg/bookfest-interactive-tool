@@ -1,4 +1,5 @@
 let timeout;
+let selectedGenre = null;
 
 const display = (data) => {
   if (data.length == 0) {
@@ -80,7 +81,7 @@ searchInput.addEventListener("input", async (readEvent) => {
   const newURL = window.location.pathname + "?q=" + encodeURIComponent(query);
   window.history.replaceState(null, "", newURL);
 
-  // I learned about debouncing from Gemini and this is how I implemented it.
+  // I learned about debouncing from Gemini and YouTube and this is how I implemented it:
   clearTimeout(timeout);
   timeout = setTimeout(async () => {
     // Fetch from Express API
@@ -98,4 +99,28 @@ searchInput.addEventListener("input", async (readEvent) => {
       renderBooks(allBooksData);
     }
   }, 300);
+});
+
+const genreButtons = document.querySelectorAll("[data-genre-id]");
+const allButton = document.querySelector(".all-genres-button");
+
+genreButtons.forEach((genreButton) => {
+  genreButton.addEventListener("click", async () => {
+    selectedGenre = genreButton.dataset.genreId;
+    const container = document.querySelector(".books-grid");
+    const response = await fetch("/books/api/filter?genre=" + selectedGenre);
+    const data = await response.json();
+    container.innerHTML = "";
+    renderBooks(data);
+    display(data);
+  });
+});
+
+allButton.addEventListener("click", async () => {
+  selectedGenre = null;
+  const container = document.querySelector(".books-grid");
+  const response = await fetch("/books/api/all");
+  const data = await response.json();
+  container.innerHTML = "";
+  renderBooks(data);
 });

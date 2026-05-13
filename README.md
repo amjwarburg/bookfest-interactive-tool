@@ -21,7 +21,7 @@ A web application specially designed for the Shropshire Bookfest pupils.
 - [ ] To be read tracker!
 - [x] (24.04.26) Create a basic login and registration process
 - [x] (30.04.26) Profile page requires login to access (a login required feature)
-- [ ] Mark as read - drag it to a bookshelf?
+- [x] (08.05.26) Mark as read/unread
 
 ## BOOK REVIEWS:
 
