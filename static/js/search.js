@@ -1,5 +1,6 @@
 let timeout;
 let selectedGenre = null;
+let currentQuery = "";
 
 const display = (data) => {
   if (data.length == 0) {
@@ -69,58 +70,57 @@ const renderBooks = (bookArray) => {
   });
 };
 
+// Fetch books matching both currentQuery and selectedGenre, then re-render the grid
+const fetchAndRender = async () => {
+  const params = new URLSearchParams();
+  if (currentQuery.length > 1) params.set("q", currentQuery);
+  if (selectedGenre) params.set("genre", selectedGenre);
+  const response = await fetch("/books/api/books?" + params.toString());
+  const data = await response.json();
+  document.getElementById("books-grid").innerHTML = "";
+  renderBooks(data);
+  display(data);
+};
+
 // Assign the search bar to a variable
 const searchInput = document.querySelector("#book-search");
 
-// Listen for typing
-searchInput.addEventListener("input", async (readEvent) => {
-  const container = document.querySelector(".books-grid");
-  const query = searchInput.value;
+// Listen for typing; debounce so we don't fire on every keystroke
+searchInput.addEventListener("input", () => {
+  currentQuery = searchInput.value;
 
   // Update the URL
-  const newURL = window.location.pathname + "?q=" + encodeURIComponent(query);
+  const newURL =
+    window.location.pathname + "?q=" + encodeURIComponent(currentQuery);
   window.history.replaceState(null, "", newURL);
 
   // I learned about debouncing from Gemini and YouTube and this is how I implemented it:
   clearTimeout(timeout);
-  timeout = setTimeout(async () => {
-    // Fetch from Express API
-    if (query.length > 1) {
-      const response = await fetch("/books/api/search?q=" + query);
-      const data = await response.json();
-
-      container.innerHTML = "";
-      renderBooks(data);
-      display(data);
-    } else {
-      const response = await fetch("/books/api/all");
-      const allBooksData = await response.json();
-      container.innerHTML = "";
-      renderBooks(allBooksData);
-    }
-  }, 300);
+  timeout = setTimeout(fetchAndRender, 300);
 });
 
 const genreButtons = document.querySelectorAll("[data-genre-id]");
 const allButton = document.querySelector(".all-genres-button");
 
+// Highlight the active genre button and clear the rest
+const setActiveGenreButton = (activeBtn) => {
+  allButton.classList.remove("genre-active");
+  genreButtons.forEach((btn) => btn.classList.remove("genre-active"));
+  if (activeBtn) activeBtn.classList.add("genre-active");
+};
+
+// Filter books with genre buttons
 genreButtons.forEach((genreButton) => {
-  genreButton.addEventListener("click", async () => {
+  genreButton.addEventListener("click", () => {
     selectedGenre = genreButton.dataset.genreId;
-    const container = document.querySelector(".books-grid");
-    const response = await fetch("/books/api/filter?genre=" + selectedGenre);
-    const data = await response.json();
-    container.innerHTML = "";
-    renderBooks(data);
-    display(data);
+    setActiveGenreButton(genreButton);
+    fetchAndRender();
   });
 });
 
-allButton.addEventListener("click", async () => {
+// Filter books with 'All' genre button
+allButton.addEventListener("click", () => {
   selectedGenre = null;
-  const container = document.querySelector(".books-grid");
-  const response = await fetch("/books/api/all");
-  const data = await response.json();
-  container.innerHTML = "";
-  renderBooks(data);
+  setActiveGenreButton(allButton);
+  fetchAndRender();
 });

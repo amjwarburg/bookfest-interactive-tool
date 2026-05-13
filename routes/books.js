@@ -20,6 +20,7 @@ router.get("/", async (req, res) => {
     // userBookStatuses maps book_id → status ('read' | 'not read') for the current user
     let userBookStatuses = {};
     const genres = await collectData("SELECT * FROM genres");
+    const moods = await collectData("SELECT * FROM moods");
     if (req.session.user) {
       const userBooks = await collectData(
         "SELECT book_id, status FROM user_books WHERE user_id = ?",
@@ -30,7 +31,7 @@ router.get("/", async (req, res) => {
       });
     }
 
-    res.render("books", { books, userBookStatuses, genres });
+    res.render("books", { books, userBookStatuses, genres, moods });
   } catch (err) {
     console.error(err);
     res.status(500).send("Error retrieving books");
@@ -113,6 +114,42 @@ router.get("/api/filter", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Error filtering books" });
+  }
+});
+
+// Combined search + genre filter endpoint used by search.js
+router.get("/api/books", async (req, res) => {
+  const q = req.query.q;
+  const genreId = req.query.genre;
+  try {
+    let rows;
+    if (q && genreId) {
+      rows = await collectData(
+        `SELECT books.* FROM books
+         JOIN book_genres ON books.id = book_genres.book_id
+         WHERE book_genres.genre_id = ?
+           AND (books.title LIKE ? OR books.author LIKE ?)`,
+        [genreId, `%${q}%`, `%${q}%`],
+      );
+    } else if (genreId) {
+      rows = await collectData(
+        `SELECT books.* FROM books
+         JOIN book_genres ON books.id = book_genres.book_id
+         WHERE book_genres.genre_id = ?`,
+        [genreId],
+      );
+    } else if (q) {
+      rows = await collectData(
+        "SELECT * FROM books WHERE title LIKE ? OR author LIKE ?",
+        [`%${q}%`, `%${q}%`],
+      );
+    } else {
+      rows = await collectData("SELECT * FROM books");
+    }
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error fetching books" });
   }
 });
 

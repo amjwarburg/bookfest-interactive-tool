@@ -158,3 +158,48 @@ body {
 .genre-container {
   display: block;
 }
+
+.dropdown-item.genre-active {
+  background-color: #32b4a2;
+  color: white;
+}
+
+/* Claude code fixed this toggle issue */
+.btn.mood-dropdown-toggle {
+  background-color: #f7a531;
+  color: white;
+  border: none;
+  --bs-btn-hover-bg: #e8941f;
+  --bs-btn-hover-color: white;
+  --bs-btn-active-bg: #e8941f;
+  --bs-btn-active-color: white;
+  --bs-btn-active-border-color: transparent;
+}
+
+.btn.mood-dropdown-toggle:hover,
+.btn.mood-dropdown-toggle:focus,
+.btn.mood-dropdown-toggle:active,
+.btn.mood-dropdown-toggle.show {
+  background-color: #e8941f;
+  color: white;
+}
+
+/* Claude code fixed this toggle issue */
+.btn.genre-dropdown-toggle {
+  background-color: #e0424e;
+  color: white;
+  border: none;
+  --bs-btn-hover-bg: #dd1e2e;
+  --bs-btn-hover-color: white;
+  --bs-btn-active-bg: #dd1e2e;
+  --bs-btn-active-color: white;
+  --bs-btn-active-border-color: transparent;
+}
+
+.btn.genre-dropdown-toggle:hover,
+.btn.genre-dropdown-toggle:focus,
+.btn.genre-dropdown-toggle:active,
+.btn.genre-dropdown-toggle.show {
+  background-color: #dd1e2e;
+  color: white;
+}

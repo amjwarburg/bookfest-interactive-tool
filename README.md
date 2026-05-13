@@ -13,7 +13,7 @@ A web application specially designed for the Shropshire Bookfest pupils.
 
 ## BOOK FILTERING:
 
-- [ ] Filter by genres
+- [x] (13.05.26) Filter by genres
 - [ ] Mood search - moods including funny, spooky, magical, heroic... Filter by these by clicking an emoji.
 
 ## USER DATA:

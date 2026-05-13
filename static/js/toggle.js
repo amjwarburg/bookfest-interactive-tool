@@ -1,4 +1,4 @@
-// Claude Code rewrote this file to toggle status between 'not read' and 'read' via AJAX.
+// Claude Code updated this file to toggle status between 'not read' and 'read' via AJAX.
 // Event delegation on document so this handles buttons added dynamically by search.js.
 document.addEventListener("submit", async (e) => {
   const form = e.target.closest(".add-book-form");

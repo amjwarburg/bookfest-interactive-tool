@@ -30,7 +30,7 @@
         <div class="search-bar-container">
         <input class="form-control mr-sm-2" id="book-search" type="search" placeholder="Search" aria-label="Search">
         <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button class="btn genre-dropdown-toggle dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Genres
         </button>
         <div class="dropdown-menu genre-container" aria-labelledby="dropdownMenuButton">
@@ -43,9 +43,20 @@
           <% } %>
         </div>
         </div>
-        
-
-        
+        <div class="dropdown">
+        <button class="btn dropdown-toggle mood-dropdown-toggle" type="button" id="moodDropdownButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Moods
+        </button>
+        <div class="dropdown-menu" aria-labelledby="moodDropdownButton">
+          <button class="dropdown-item all-moods-button" type="button">All</button>
+          <div class="dropdown-divider"></div>
+          <% for (let mood of moods) { %>
+            <button type="button" class="dropdown-item mood-button" data-mood-id="<%= mood.id %>">
+              <%= mood.emoji %> <%= mood.name %>
+            </button>
+          <% } %>
+        </div>
+        </div>
 
         <% if (user && user.is_admin === 1) { %>
         <a href="/books/manage" class="btn btn-dark">Manage</a>
