@@ -117,35 +117,39 @@ router.get("/api/filter", async (req, res) => {
   }
 });
 
-// Combined search + genre filter endpoint used by search.js
+// Claude Code rewrote this endpoint to support mood filtering in addition to search and genre.
+// The original if/else chain only handled q+genre combinations (4 cases); adding mood would have
+// required 8 branches. Instead, Claude Code builds the SQL dynamically: JOINs and WHERE conditions
+// are appended only when the corresponding query param is present, so all combinations are handled
+// cleanly without repetition.
 router.get("/api/books", async (req, res) => {
   const q = req.query.q;
   const genreId = req.query.genre;
+  const moodId = req.query.mood;
   try {
-    let rows;
-    if (q && genreId) {
-      rows = await collectData(
-        `SELECT books.* FROM books
-         JOIN book_genres ON books.id = book_genres.book_id
-         WHERE book_genres.genre_id = ?
-           AND (books.title LIKE ? OR books.author LIKE ?)`,
-        [genreId, `%${q}%`, `%${q}%`],
-      );
-    } else if (genreId) {
-      rows = await collectData(
-        `SELECT books.* FROM books
-         JOIN book_genres ON books.id = book_genres.book_id
-         WHERE book_genres.genre_id = ?`,
-        [genreId],
-      );
-    } else if (q) {
-      rows = await collectData(
-        "SELECT * FROM books WHERE title LIKE ? OR author LIKE ?",
-        [`%${q}%`, `%${q}%`],
-      );
-    } else {
-      rows = await collectData("SELECT * FROM books");
+    let sql = "SELECT DISTINCT books.* FROM books";
+    const params = [];
+
+    if (genreId) sql += " JOIN book_genres ON books.id = book_genres.book_id";
+    if (moodId) sql += " JOIN book_moods ON books.id = book_moods.book_id";
+
+    const conditions = [];
+    if (genreId) {
+      conditions.push("book_genres.genre_id = ?");
+      params.push(genreId);
     }
+    if (moodId) {
+      conditions.push("book_moods.mood_id = ?");
+      params.push(moodId);
+    }
+    if (q) {
+      conditions.push("(books.title LIKE ? OR books.author LIKE ?)");
+      params.push(`%${q}%`, `%${q}%`);
+    }
+
+    if (conditions.length) sql += " WHERE " + conditions.join(" AND ");
+
+    const rows = await collectData(sql, params);
     res.json(rows);
   } catch (err) {
     console.error(err);
@@ -167,7 +171,8 @@ router.get("/info/:id", async (req, res) => {
   }
 });
 
-// Gemini suggested I change this to use async/await, so I had to learn about promisify to implement this
+// Gemini suggested I change this to use async/await, so I had to learn about promisify
+// to implement this
 router.get("/manage", isAdmin, (req, res) => {
   async function getData() {
     try {
@@ -186,7 +191,8 @@ router.get("/manage", isAdmin, (req, res) => {
   getData();
 });
 
-// I had to study the documentation for Multer to work out how to handle file uploads, and I asked Gemini for some help with its implementation.
+// I had to study the documentation for Multer to work out how to handle file uploads, and I
+// asked Gemini for some help with its implementation.
 // Claude Code added validateCsrfToken here AFTER upload.single so multer has already
 // populated req.body with the hidden _csrf field before the token is checked.
 router.post(

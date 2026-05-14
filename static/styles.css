@@ -164,6 +164,11 @@ body {
   color: white;
 }
 
+.dropdown-item.mood-active {
+  background-color: #b7a6ca;
+  color: white;
+}
+
 /* Claude code fixed this toggle issue */
 .btn.mood-dropdown-toggle {
   background-color: #f7a531;

@@ -42,7 +42,7 @@ New DB work in `routes/books.js` should use these helpers and async/await. Other
 **Schema summary:**
 - `users` — id, firstName, lastName, email, hash (bcrypt), is_admin (0/1)
 - `books` — id, title, author, publication_year, reading_age, cover_image (path)
-- `genres`, `moods` — lookup tables
+- `genres`, `moods` — lookup tables (`moods` has an `emoji` column)
 - `book_genres`, `book_moods` — junction tables (many-to-many)
 - `user_books` — tracks which user has added which book
 
@@ -58,4 +58,4 @@ New DB work in `routes/books.js` should use these helpers and async/await. Other
 
 **Many-to-many edits:** When saving genres/moods for a book, the pattern is delete-all then re-insert. The incoming value may be a single string or an array, so always normalise: `Array.isArray(x) ? x : [x]`.
 
-**Static assets:** `static/js/search.js` handles the debounced live search (300ms, minimum 2 chars, updates URL via `history.replaceState`). `static/js/toggle.js` handles Add button state. `static/js/preview.js` handles image upload preview on the manage/edit forms.
+**Static assets:** `static/js/search.js` handles the debounced live search (300ms, minimum 2 chars, updates URL via `history.replaceState`) and genre/mood filtering. All three filters compose via a single `fetchAndRender()` function that calls `GET /books/api/books?q=&genre=&mood=` with the current state of each. `static/js/toggle.js` handles Add button state. `static/js/preview.js` handles image upload preview on the manage/edit forms.

@@ -1,5 +1,6 @@
 let timeout;
 let selectedGenre = null;
+let selectedMood = null; // Claude Code added: tracks the active mood filter
 let currentQuery = "";
 
 const display = (data) => {
@@ -75,6 +76,7 @@ const fetchAndRender = async () => {
   const params = new URLSearchParams();
   if (currentQuery.length > 1) params.set("q", currentQuery);
   if (selectedGenre) params.set("genre", selectedGenre);
+  if (selectedMood) params.set("mood", selectedMood); // Claude Code added: send mood param to API
   const response = await fetch("/books/api/books?" + params.toString());
   const data = await response.json();
   document.getElementById("books-grid").innerHTML = "";
@@ -100,11 +102,13 @@ searchInput.addEventListener("input", () => {
 });
 
 const genreButtons = document.querySelectorAll("[data-genre-id]");
-const allButton = document.querySelector(".all-genres-button");
+const moodButtons = document.querySelectorAll("[data-mood-id]");
+const allMoodsButton = document.querySelector(".all-moods-button");
+const allGenresButton = document.querySelector(".all-genres-button");
 
 // Highlight the active genre button and clear the rest
 const setActiveGenreButton = (activeBtn) => {
-  allButton.classList.remove("genre-active");
+  allGenresButton.classList.remove("genre-active");
   genreButtons.forEach((btn) => btn.classList.remove("genre-active"));
   if (activeBtn) activeBtn.classList.add("genre-active");
 };
@@ -118,9 +122,33 @@ genreButtons.forEach((genreButton) => {
   });
 });
 
-// Filter books with 'All' genre button
-allButton.addEventListener("click", () => {
+// Filter books with 'All' genres button
+allGenresButton.addEventListener("click", () => {
   selectedGenre = null;
-  setActiveGenreButton(allButton);
+  setActiveGenreButton(allGenresButton);
+  fetchAndRender();
+});
+
+// Highlight the active mood button and clear the rest
+const setActiveMoodButton = (activeBtn) => {
+  allMoodsButton.classList.remove("mood-active");
+  moodButtons.forEach((btn) => btn.classList.remove("mood-active"));
+  if (activeBtn) activeBtn.classList.add("mood-active");
+};
+
+// Filter books with mood buttons
+// Claude Code fixed dataset.genreId → dataset.moodId (was reading the wrong attribute)
+moodButtons.forEach((moodButton) => {
+  moodButton.addEventListener("click", () => {
+    selectedMood = moodButton.dataset.moodId;
+    setActiveMoodButton(moodButton);
+    fetchAndRender();
+  });
+});
+
+// Filter books with 'All' moods button
+allMoodsButton.addEventListener("click", () => {
+  selectedMood = null;
+  setActiveMoodButton(allMoodsButton);
   fetchAndRender();
 });
