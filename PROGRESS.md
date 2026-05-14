@@ -12,8 +12,8 @@
 ## BOOK FILTERING:
 
 - [x] (13.05.26) Filter by genres
-- [x] Mood search - moods buttons including funny, spooky, magical, heroic...
-- [x] Filter by these moods by clicking a corresponding button with a name and emoji.
+- [x] (13.05.26) Mood search - moods buttons including funny, spooky, magical, heroic...
+- [x] (14.05.26) Filter by these moods by clicking a corresponding button with a name and emoji.
 
 ## USER DATA:
 
@@ -43,7 +43,7 @@
 
 - [ ] Some kind of 'reading flame' feature that glows if you've logged a review this week and get gradually stronger
 - [ ] Badges! Bookworm badge (5 books), Book Award Hero (all six shortlisted books read and reviewed), First Critic (first review posted)
-- [ ] Progress bars that fill as they read a booK?
+- [ ] Progress bars that fill as they read a book?
 - [ ] Dynamic toasts (when a user submits a review, use a library like SweetAlert2 to say 'Great Job + 10 Reading Points' with confetti)
 - [ ] Take me on an adventure - random page for a book you haven't read before
 - [ ] Book battles - vote on your favourite of two books

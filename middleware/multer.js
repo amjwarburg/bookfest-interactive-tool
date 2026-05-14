@@ -12,7 +12,7 @@ const storage = multer.diskStorage({
     cb(null, path.join(__dirname, "../static/images/book_covers"));
   },
   filename: (req, file, cb) => {
-    cb(null, file.originalname.toLowerCase());
+    cb(null, path.basename(file.originalname).toLowerCase());
   },
 });
 
